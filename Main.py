@@ -1,13 +1,19 @@
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import matplotlib.patches as mpatches
 import streamlit as st
 
 # Streamlit file upload widgets
 st.title("AOD, Wind Speed, and Temperature Visualization")
+
 filename = st.text_input('Enter the URL for AERONET Data', 
                         'https://raw.githubusercontent.com/Rsaltos7/AODDATA/refs/heads/main/20230101_20241231_Turlock_CA_USA_part1%20(1).lev15')
+
 windfile = st.text_input('Enter the URL for Wind Data', 
                          'https://github.com/Rsaltos7/AODDATA/blob/main/Modesto_Wind_2023%20(2).csv')
+
 weatherFile = windfile  # Assuming same as windfile
 StartDate = st.text_input('Start Date', '2019-06-11 00:00:00')
 EndDate = st.text_input('End Date', '2019-06-13 23:59:59')
@@ -22,11 +28,16 @@ def load_data():
     datetime_pac = pd.to_datetime(datetime_utc).dt.tz_localize('UTC').dt.tz_convert('US/Pacific')
     df.set_index(datetime_pac, inplace=True)
 
-    # Replace -999 with NaN in the columns of interest
-    df['AOD_380nm-Total'].replace(-999.0, np.nan, inplace=True)
-    df['AOD_440nm-Total'].replace(-999.0, np.nan, inplace=True)
-    df['AOD_500nm-Total'].replace(-999.0, np.nan, inplace=True)
-    df['AOD_675nm-Total'].replace(-999.0, np.nan, inplace=True)
+    # Strip any extra spaces from column names
+    df.columns = df.columns.str.strip()
+
+    # Define AOD columns and handle missing ones
+    AOD_columns = ['AOD_380nm-Total', 'AOD_440nm-Total', 'AOD_500nm-Total', 'AOD_675nm-Total']
+    for column in AOD_columns:
+        if column in df.columns:
+            df[column].replace(-999.0, np.nan, inplace=True)
+        else:
+            st.warning(f"Column {column} is missing from the data.")
     
     return df
 
