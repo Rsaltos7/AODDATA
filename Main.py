@@ -18,8 +18,8 @@ windfile = st.text_input('Enter the URL for Wind Data',
                          'https://github.com/Rsaltos7/AODDATA/blob/main/Modesto_Wind_2023%20(2).csv')
 
 weatherFile = windfile  # Assuming same as windfile
-StartDate = st.text_input('Start Date', '2019-06-11 00:00:00')
-EndDate = st.text_input('End Date', '2019-06-13 23:59:59')
+StartDate = st.text_input('Start Date', '2023-06-11 00:00:00')
+EndDate = st.text_input('End Date', '2023-06-13 23:59:59')
 sampleRate = st.text_input('Sample Rate', '1h')
 windSampleRate = sampleRate
 
