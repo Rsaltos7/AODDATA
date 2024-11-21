@@ -5,7 +5,7 @@ import matplotlib.dates as mdates
 import streamlit as st
 
 # Set the backend for matplotlib to avoid rendering issues in Streamlit
-matplotlib.use('Agg')  # Non-interactive backend to ensure smooth plotting
+#matplotlib.use('Agg')  # Non-interactive backend to ensure smooth plotting
 
 # Streamlit file upload widgets
 st.title("AOD, Wind Speed, and Temperature Visualization")
