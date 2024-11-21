@@ -5,8 +5,8 @@ import matplotlib.dates as mdates
 import matplotlib.patches as mpatches
 
 filename = 'https://raw.githubusercontent.com/Rsaltos7/AODDATA/refs/heads/main/20230101_20241231_Turlock_CA_USA_part1%20(1).lev15'
-windfile = 'Modesto_Wind_2019_Jan_Dec_72492623258.csv'
-weatherFile = 'Wind_Data/Modesto_Weather_Feb_2019.csv'
+windfile = 'https://github.com/Rsaltos7/AODDATA/blob/main/Modesto_Wind_2023%20(2).csv'
+weatherFile = 'https://github.com/Rsaltos7/AODDATA/blob/main/Modesto_Wind_2023%20(2).csv'
 StartDate='2019-06-11 00:00:00'
 EndDate='2019-06-13 23:59:59'
 sampleRate = '1h'
