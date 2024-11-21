@@ -1,9 +1,12 @@
 import numpy as np
 import pandas as pd
+import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
-import matplotlib.patches as mpatches
 import streamlit as st
+
+# Set the backend for matplotlib to avoid rendering issues in Streamlit
+matplotlib.use('Agg')  # Non-interactive backend to ensure smooth plotting
 
 # Streamlit file upload widgets
 st.title("AOD, Wind Speed, and Temperature Visualization")
