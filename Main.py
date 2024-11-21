@@ -1,8 +1,5 @@
 import numpy as np
 import pandas as pd
-
-import dates as mdates
-import patches as mpatches
 import streamlit as st
 
 # Streamlit file upload widgets
