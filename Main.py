@@ -25,8 +25,9 @@ windSampleRate = sampleRate
 
 # Load the AERONET data and make US/PAC time its index.
 @st.cache_data
-def load_data():
-    df = pd.read_csv(filename, skiprows=6, parse_dates={'datetime': [0, 1]})
+def load_data(file url):
+  try:
+    df = pd.read_csv(file_url, skiprows=6, parse_dates={'datetime': [0, 1]})
     datetime_utc = pd.to_datetime(df["datetime"], format='%d:%m:%Y %H:%M:%S')
     datetime_pac = pd.to_datetime(datetime_utc).dt.tz_localize('UTC').dt.tz_convert('US/Pacific')
     df.set_index(datetime_pac, inplace=True)
