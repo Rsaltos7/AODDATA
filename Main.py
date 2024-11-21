@@ -11,6 +11,7 @@ matplotlib.use('Agg')  # Non-interactive backend to ensure smooth plotting
 # Streamlit file upload widgets
 st.title("AOD, Wind Speed, and Temperature Visualization")
 
+# Inputs for file URLs and other parameters
 filename = st.text_input('Enter the URL for AERONET Data', 
                         'https://raw.githubusercontent.com/Rsaltos7/AODDATA/refs/heads/main/20230101_20241231_Turlock_CA_USA_part1%20(1).lev15')
 
@@ -25,8 +26,7 @@ windSampleRate = sampleRate
 
 # Load the AERONET data and make US/PAC time its index.
 @st.cache_data
-def load_data(file url):
-  try:
+def load_data(file_url):
     df = pd.read_csv(file_url, skiprows=6, parse_dates={'datetime': [0, 1]})
     datetime_utc = pd.to_datetime(df["datetime"], format='%d:%m:%Y %H:%M:%S')
     datetime_pac = pd.to_datetime(datetime_utc).dt.tz_localize('UTC').dt.tz_convert('US/Pacific')
@@ -45,12 +45,12 @@ def load_data(file url):
     
     return df
 
-df = load_data()
+df = load_data(filename)
 
 # Load NOAA data and make US/PAC time its index.
 @st.cache_data
-def load_wind_data():
-    Wdf = pd.read_csv(windfile, parse_dates={'datetime': [1]}, low_memory=False)
+def load_wind_data(file_url):
+    Wdf = pd.read_csv(file_url, parse_dates={'datetime': [1]}, low_memory=False)
     datetime_utc = pd.to_datetime(Wdf["datetime"], format='%d-%m-%Y %H:%M:%S')
     datetime_pac = pd.to_datetime(datetime_utc).dt.tz_localize('UTC').dt.tz_convert('US/Pacific')
     Wdf.set_index(datetime_pac, inplace=True)
@@ -67,7 +67,7 @@ def load_wind_data():
     WNDdf[5], WNDdf[6] = Xdata, Ydata
     return WNDdf, Wdf
 
-WNDdf, Wdf = load_wind_data()
+WNDdf, Wdf = load_wind_data(windfile)
 
 # Load temperature data
 @st.cache_data
