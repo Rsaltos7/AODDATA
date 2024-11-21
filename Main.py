@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import matplotlib.patches as mpatches
 
-filename = '20190101_20191231_Modesto (1).tot_lev20'
+filename = 'https://raw.githubusercontent.com/Rsaltos7/AODDATA/refs/heads/main/20230101_20241231_Turlock_CA_USA_part1%20(1).lev15'
 windfile = 'Modesto_Wind_2019_Jan_Dec_72492623258.csv'
 weatherFile = 'Wind_Data/Modesto_Weather_Feb_2019.csv'
 StartDate='2019-06-11 00:00:00'
