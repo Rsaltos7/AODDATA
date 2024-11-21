@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-import matplotlib as plt
+
 import dates as mdates
 import patches as mpatches
 import streamlit as st
