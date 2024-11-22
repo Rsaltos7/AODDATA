@@ -3,84 +3,55 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+StartDate='2023-07-01'
+EndDate='2023-07-07'
 
-# Title and file uploader
-st.title("Temperature Data Visualization")
-uploaded_file = st.file_uploader("Upload your temperature data CSV", type="csv")
+   # URL for the wind data file
+windfile = 'https://raw.githubusercontent.com/Rsaltos7/AERONET_Streamlit/refs/heads/main/Modesto_Wind_2023%20(2).csv'
+windSampleRate = '3h'
+     # Read the wind data
+Wdf = pd.read_csv(windfile, parse_dates={'datetime': [1]}, low_memory=False)
+datetime_utc = pd.to_datetime(Wdf["datetime"], format='%d-%m-%Y %H:%M:%S')
+datetime_pac = datetime_utc.dt.tz_localize('UTC').dt.tz_convert('US/Pacific')
+Wdf.set_index(datetime_pac, inplace=True)
+# Streamlit widgets for dynamic date range selection
+st.title = "Wind Vectors (Magnitude and Direction)"  # Fixing title assignment to a string
+start_date = st.date_input("Select Start Date", pd.to_datetime('2023-07-01'))
+end_date = st.date_input("Select End Date", pd.to_datetime('2023-07-07'))
 
-if uploaded_file:
-    # Load the data
-    Wdf = pd.read_csv(uploaded_file, parse_dates=['DATE'], index_col='DATE')
-    Wdf.sort_index(inplace=True)
+# Assuming Wdf, StartDate, EndDate, siteName, filename, SampleRate are defined earlier
+Tdf = Wdf.loc[StartDate:EndDate, 'TMP'].str.split(pat=',', expand=True)
+Tdf.replace('+9999', np.nan, inplace=True)
 
-    # User inputs for date range and other settings
-    StartDate = st.date_input("Start Date", value=Wdf.index.min().date())
-    EndDate = st.date_input("End Date", value=Wdf.index.max().date())
-    SampleRate = st.selectbox("Sampling Rate", ['H', 'D', 'W'], index=1)  # Hourly, Daily, Weekly
-    graphScale = st.slider("Graph Scale", 1.0, 5.0, 1.5)
-    siteName = st.text_input("Site Name", value="Default Site")
-    filename = st.text_input("Filename Prefix", value="Temperature_Data")
+# Create subplots (2x2 layout, adjust as needed)
+fig, axes = plt.subplots(1, 1, figsize=(13, 8))
+#ax = axes[0, 0]  # Use the first subplot for this specific plot
 
- Tdf = Wdf.loc[StartDate:EndDate, 'TMP'].str.split(pat=',', expand=True)
-    Tdf.replace('+9999', np.nan, inplace=True)
-# Remove obvious outliers (e.g., temperatures greater than 50°C or negative below reasonable thresholds)
-Tdf = temp_data[(temp_data >= -50) & (temp_data <= 50)]
-
-# Re-plot the filtered data
-fig, ax = plt.subplots(figsize=(13, 8))
+# Format the figure and axis
 fig.autofmt_xdate()
-ax.set_title("Temperature (Filtered)")
+ax.set_title("Temperature")
 ax.grid(which='both', axis='both')
 ax.xaxis.set_major_locator(mdates.DayLocator(interval=1))  # Major ticks: 1 day
 ax.xaxis.set_minor_locator(mdates.HourLocator(interval=3))  # Minor ticks: every 3 hours
 ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d %H:%M:%S'))
 
-# Update y-axis range based on filtered data
-filtered_y_min = filtered_temp_data.min() - 1  # Add a small buffer below minimum
-filtered_y_max = filtered_temp_data.max() + 1  # Add a small buffer above maximum
-ax.set_ylim(filtered_y_min, filtered_y_max)
+# Prepare temperature data
+temp_data = Tdf.loc[StartDate:EndDate].astype(float).resample(SampleRate).mean().div(10)
 ax.set_ylabel('Temperature (°C)')
+temp_data.min() - 1  # Add a small buffer below minimum #y_min =1
+temp_data.max() + 1  # Add a small buffer above maximum #y_max =24
+#y_min = temp_data.min() - 1  # A small buffer below the minimum value
+#y_max = temp_data.max() + 1  # A small buffer above the maximum value
+ax.set_ylim(y_min, y_max)
 
-# Plot the filtered temperature data
-ax.plot(filtered_temp_data, '.r-', label='Filtered Temperature')
 
-# Finalize layout and display
-plt.tight_layout()
-plt.show()
+# Plot the data
+ax.plot(temp_data, '.r-', label='Temperature')
 
-    
-    # Process temperature data
-    Tdf = Wdf.loc[StartDate:EndDate, 'TMP'].str.split(pat=',', expand=True)
-    Tdf.replace('+9999', np.nan, inplace=True)
+# Add legend and finalize layout
+#ax.legend(handles=[temperatureHandle], loc='best')
+plt.tight_layout()  # Adjust layout to prevent overlaps
 
-    # Prepare the figure
-    fig, axes = plt.subplots(1, 1, figsize=(16 * graphScale, 9 * graphScale))
-    ax = axes
-
-    # Set up the plot
-    fig.autofmt_xdate()
-    ax.set_title(f"{siteName} {filename[:4]} Temperature")
-    ax.grid(which='both', axis='both')
-    ax.xaxis.set_major_locator(mdates.DayLocator(interval=1))
-    ax.xaxis.set_minor_locator(mdates.HourLocator(interval=3))
-    ax.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
-
-    # Plot temperature data
-    ax.set_ylabel('Temperature (°C)')
-    temp_data = Tdf[0].astype(float).resample(SampleRate).mean().div(10)  # Process and scale temperature
-    #ax.set_ylim(temp_data.min() // 1, temp_data.max() // 1)  # Auto calculate Y-axis limits
-    # Sidebar controls for adjusting y-axis limits
-    st.sidebar.header("Adjust Y-axis Limits")
-    y_min = st.sidebar.slider("Y-Axis Min", min_value=0.0, max_value=50.0, value=17.0, step=0.5)
-    y_max = st.sidebar.slider("Y-Axis Max", min_value=0.0, max_value=50.0, value=24.0, step=0.5)
-    temperatureHandle, = ax.plot(temp_data, '.r-', label='Temperature', figure=fig)
-
-    # Add legend and adjust layout
-    plt.legend(handles=[temperatureHandle], loc='best')
-    plt.tight_layout()
-
-    # Render the plot in Streamlit
-    st.pyplot(fig)
-
-else:
-    st.info("Please upload a CSV file to visualize.")
+# Display the figure
+st.pyplot(fig)
+st.write("Temperature Data:", temp_data)
