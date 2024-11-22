@@ -2,7 +2,9 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import csv
+import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+import matplotlib.patches as mpatches
 # Change filenames to the names of the files that you uploaded
 filename = "https://raw.githubusercontent.com/Rsaltos7/AODDATA/refs/heads/main/Modesto_Wind_2023%20(2).csv"
 windfile = "https://raw.githubusercontent.com/Rsaltos7/AODDATA/refs/heads/main/Modesto_Wind_2023%20(2).csv"
