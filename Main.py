@@ -1,8 +1,8 @@
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-import matplotlib.patches as mpatches
+#import matplotlib.pyplot as plt
+#import matplotlib.dates as mdates
+#import matplotlib.patches as mpatches
 import streamlit as st
 
 # Data URLs
