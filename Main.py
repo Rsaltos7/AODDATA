@@ -11,8 +11,8 @@ windfile = 'https://raw.githubusercontent.com/Rsaltos7/AODDATA/refs/heads/main/M
 weatherFile = 'https://raw.githubusercontent.com/Rsaltos7/AODDATA/refs/heads/main/Modesto_Wind_2023%20(2).csv'
 
 # Streamlit inputs for the start and end date
-StartDate = st.date_input("Start Date", pd.to_datetime('2019-06-11'))
-EndDate = st.date_input("End Date", pd.to_datetime('2019-06-13'))
+StartDate = st.date_input("Start Date", pd.to_datetime('2023-06-11'))
+EndDate = st.date_input("End Date", pd.to_datetime('2023-06-13'))
 
 # Set sample rate
 sampleRate = '1h'
