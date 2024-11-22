@@ -40,7 +40,11 @@ if uploaded_file:
     # Plot temperature data
     ax.set_ylabel('Temperature (°C)')
     temp_data = Tdf[0].astype(float).resample(SampleRate).mean().div(10)  # Process and scale temperature
-    ax.set_ylim(temp_data.min() // 1, temp_data.max() // 1)  # Auto calculate Y-axis limits
+    #ax.set_ylim(temp_data.min() // 1, temp_data.max() // 1)  # Auto calculate Y-axis limits
+    # Sidebar controls for adjusting y-axis limits
+    st.sidebar.header("Adjust Y-axis Limits")
+    y_min = st.sidebar.slider("Y-Axis Min", min_value=0.0, max_value=50.0, value=17.0, step=0.5)
+    y_max = st.sidebar.slider("Y-Axis Max", min_value=0.0, max_value=50.0, value=24.0, step=0.5)
     temperatureHandle, = ax.plot(temp_data, '.r-', label='Temperature', figure=fig)
 
     # Add legend and adjust layout
