@@ -21,6 +21,34 @@ if uploaded_file:
     siteName = st.text_input("Site Name", value="Default Site")
     filename = st.text_input("Filename Prefix", value="Temperature_Data")
 
+ Tdf = Wdf.loc[StartDate:EndDate, 'TMP'].str.split(pat=',', expand=True)
+    Tdf.replace('+9999', np.nan, inplace=True)
+# Remove obvious outliers (e.g., temperatures greater than 50°C or negative below reasonable thresholds)
+Tdf = temp_data[(temp_data >= -50) & (temp_data <= 50)]
+
+# Re-plot the filtered data
+fig, ax = plt.subplots(figsize=(13, 8))
+fig.autofmt_xdate()
+ax.set_title("Temperature (Filtered)")
+ax.grid(which='both', axis='both')
+ax.xaxis.set_major_locator(mdates.DayLocator(interval=1))  # Major ticks: 1 day
+ax.xaxis.set_minor_locator(mdates.HourLocator(interval=3))  # Minor ticks: every 3 hours
+ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d %H:%M:%S'))
+
+# Update y-axis range based on filtered data
+filtered_y_min = filtered_temp_data.min() - 1  # Add a small buffer below minimum
+filtered_y_max = filtered_temp_data.max() + 1  # Add a small buffer above maximum
+ax.set_ylim(filtered_y_min, filtered_y_max)
+ax.set_ylabel('Temperature (°C)')
+
+# Plot the filtered temperature data
+ax.plot(filtered_temp_data, '.r-', label='Filtered Temperature')
+
+# Finalize layout and display
+plt.tight_layout()
+plt.show()
+
+    
     # Process temperature data
     Tdf = Wdf.loc[StartDate:EndDate, 'TMP'].str.split(pat=',', expand=True)
     Tdf.replace('+9999', np.nan, inplace=True)
