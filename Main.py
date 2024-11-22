@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt 
 import matplotlib.dates as mdates
 import matplotlib.patches as mpatches
-
+import streamlit as st
 filename = 'https://raw.githubusercontent.com/Rsaltos7/AODDATA/refs/heads/main/20230101_20241231_Turlock_CA_USA_part1%20(1).lev15'
 windfile = 'https://raw.githubusercontent.com/Rsaltos7/AODDATA/refs/heads/main/Modesto_Wind_2023%20(2).csv'
 weatherFile = 'https://raw.githubusercontent.com/Rsaltos7/AODDATA/refs/heads/main/Modesto_Wind_2023%20(2).csv'
