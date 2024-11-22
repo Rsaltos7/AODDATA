@@ -59,7 +59,7 @@ Tdf = Wdf.loc[StartDate:EndDate, 'TMP'].str.split(pat=',', expand=True)
 Tdf.replace('+9999', np.nan, inplace=True)
 
 # Create the plot
-fig, ax = plt.subplots(1, 1, figsize=(16 * 0.65, 9 * 0.65))
+fig, ax = plot.subplots(1, 1, figsize=(16 * 0.65, 9 * 0.65))
 
 # Plot AOD data (AOD_500nm-Total)
 ax.set_title("Modesto 2019: AOD, Wind Speed, and Temperature")
