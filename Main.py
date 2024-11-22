@@ -7,8 +7,8 @@ import csv
 
 # Change filenames to the names of the files that you uploaded
 ## Note: These files will be used for all graphs in this assignment
-filename = '20230101_20241231_Turlock_CA_USA_part1 (1).lev15'
-windfile = "Modesto_Wind_2023 (2).csv"
+filename = 'https://github.com/Rsaltos7/AODDATA/blob/main/20230101_20241231_Turlock_CA_USA_part1%20(1).lev15'
+windfile = ""
 siteName="Turlock CA USA"
 SampleRate = "1h"
 WindSampleRate = "3h"
