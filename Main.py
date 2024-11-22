@@ -1,101 +1,125 @@
-import numpy as np  # Import NumPy for numerical operations
-import pandas as pd  # Import pandas a data manipulation library also creates shorcut pd 
-import matplotlib.pyplot as plt  # Import pyplot for plotting and makes shorcut py
-import matplotlib.dates as mdates  # Imports matplotlib.dates for handling dates in plots and makes short cut mdates
-import matplotlib.patches as mpatches  # Import patches for drawing shapes shorcuts it to mpatches
-import csv  # Import CSV module for reading CSV files
+import numpy as np 
+import pandas as pd 
+import matplotlib.pyplot as plt 
+import matplotlib.dates as mdates
+import matplotlib.patches as mpatches
 
-# Define filenames for the data files
-filename = '20190101_20191231_Modesto (1).tot_lev20'  # AERONET data file this case for modesto
-windfile = 'Modesto_Wind_2019_Jan_Dec_72492623258.csv'  # Wind data file for modesto
-StartDate = '2016-01-01 00:00:00'  # Start date for specific data points
-EndDate = '2023-12-31 23:59:59'  # End date for specific data points
+filename = 'AERONET_Data/20190101_20191231_Modesto.tot_lev20'
+windfile = 'Wind_Data/Modesto_Wind_2019_Jan_Dec_72492623258.csv'
+weatherFile = 'Wind_Data/Modesto_Weather_Feb_2019.csv'
+StartDate='2019-06-11 00:00:00'
+EndDate='2019-06-13 23:59:59'
+sampleRate = '1h'
+windSampleRate = sampleRate
 
-# Getting the name of the site from the first row of the AERONET data file
-with open(filename) as csvfile:
-    csvreader = csv.reader(csvfile, delimiter=',')  # Create a CSV reader
-    next(csvreader)  # Skip the first line (header)
-    for line in csvreader:  # Read the next line
-        siteName = line[0]  # Extract the site name
-        break  # Exit the loop after getting the first line
-print(siteName)  # Print the site name
+# Load the AERONET data and make US/PAC time its index.
+df = pd.read_csv(filename,skiprows = 6, parse_dates={'datetime':[0,1]})
+datetime_utc=pd.to_datetime(df["datetime"], format='%d:%m:%Y %H:%M:%S')
+datetime_pac= pd.to_datetime(datetime_utc).dt.tz_localize('UTC').dt.tz_convert('US/Pacific')
+df.set_index(datetime_pac, inplace = True)
 
-# Load the AERONET data and convert datetime to US/Pacific timezone
-df = pd.read_csv(filename, skiprows=6, parse_dates={'datetime': [0, 1]})  # Read AERONET data, combining first two columns into a datetime column
-# Convert the combined datetime to UTC and then to US/Pacific timezone
-datetime_utc = pd.to_datetime(df["datetime"], format='%d:%m:%Y %H:%M:%S')  
-datetime_pac = pd.to_datetime(datetime_utc).dt.tz_localize('UTC').dt.tz_convert('US/Pacific')
-df.set_index(datetime_pac, inplace=True)  # Set the new datetime index for the DataFrame
+# Set the Columns that has the AOD Total and replace -999 with nan in visible wavelengths.
+AODTotalColumns=range(3,173,8)
+#for iWaveLength in df.columns[AODTotalColumns]: print(iWaveLength)
+#Replaces all -999 values with nan so invalid entries does not affect resample.mean()
+df['AOD_380nm-Total'].replace(-999.0, np.nan, inplace = True)
+df['AOD_440nm-Total'].replace(-999.0, np.nan, inplace = True)
+df['AOD_500nm-Total'].replace(-999.0, np.nan, inplace = True)
+df['AOD_675nm-Total'].replace(-999.0, np.nan, inplace = True)
+    
+# Load NOAA data and make US/PAC time its index.
+# Wdf = Weather Data Frame
+Wdf = pd.read_csv(windfile, parse_dates={'datetime':[1]}, low_memory=False)
+datetime_utc=pd.to_datetime(Wdf["datetime"], format='%d-%m-%Y %H:%M:%S')
+datetime_pac= pd.to_datetime(datetime_utc).dt.tz_localize('UTC').dt.tz_convert('US/Pacific')
+Wdf.set_index(datetime_pac, inplace = True)
+# Note that we're making a copy of Wdf as WNDdf (Wind Dataframe)
+WNDdf= Wdf.loc[StartDate:EndDate,'WND'].str.split(pat=',', expand= True)
+## Cut on the Data that has both Valid Windspeed and Direction.
+WNDdf= WNDdf.loc[WNDdf[4]=='5']
+WNDdf= WNDdf.loc[WNDdf[1]=='5']
 
-# Load NOAA wind data and convert datetime to US/Pacific timezone
-Wdf = pd.read_csv(windfile, parse_dates={'datetime': [1]}, low_memory=False)  # Read wind data, parsing the datetime column
-datetime_utc = pd.to_datetime(Wdf["datetime"], format='%d-%m-%Y %H:%M:%S')  # Convert to UTC
-datetime_pac = pd.to_datetime(datetime_utc).dt.tz_localize('UTC').dt.tz_convert('US/Pacific')  # Convert to US/Pacific
-Wdf.set_index(datetime_pac, inplace=True)  # Set the new datetime index for the wind DataFrame
+# Converting the Cardinal Coordinates to Cartesian using x=r*sinΘ and y=r*cosΘ
+Xdata, Ydata = [], []
+for _, row in WNDdf.iterrows():
+    Xdata.append(np.float64(row[3]) # Magnitude
+                 *np.sin(np.float64(row[0]) # Angle
+                               *(np.pi/180)))
+    Ydata.append(np.float64(row[3])*np.cos(np.float64(row[0])*(np.pi/180)))
+WNDdf[5], WNDdf[6] = Xdata, Ydata # Appending these new Coordinates to the Wind Data Frame
 
-# Create a copy of wind data and filter for valid wind speed and direction
-WNDdf = Wdf.loc[StartDate:EndDate, 'WND'].str.split(pat=',', expand=True)  # Split 'WND' column into separate columns
-# Filter for valid wind speed and direction
-WNDdf = WNDdf.loc[WNDdf[4] == '5']  # Keep only rows where the 4th column equals '5' (valid wind speed)
-WNDdf = WNDdf.loc[WNDdf[1] == '5']  # Keep only rows where the 1st column equals '5' (valid wind direction)
+# Tdf = Temperature Data Frame
+## Splitting Temperature from the Weather Data Frame and expanding the string into individual columns
+Tdf = Wdf.loc[StartDate:EndDate,'TMP'].str.split(pat=',', expand = True)
+## Replacing +9999 values with nan, +9999 indicates "missing data"
+Tdf.replace('+9999', np.nan, inplace = True)
 
-# Replace -999 with NaN for AOD Total wavelengths in the AERONET data
-AODTotalColumns = range(3, 173, 8)  # Define the range for AOD total columns
-for iWaveLength in df.columns[AODTotalColumns]:
-    df[iWaveLength].replace(-999.0, np.nan, inplace=True)  # Replace invalid AOD values with NaN
+# Creating Figure and main Axis
+## Note: Technically, we can draw multiple, side-by-side, graphs using this method.
+## Using a 16x9 aspect ratio
+fig, axes = plt.subplots(1,1, figsize=(16*.65,9*.65)) # plt.subplots(nrows, ncolumns, *args) # axs will be either an individual plot or an array of axes
+try:
+    ax = axes[0,0] # If axes is a 2D array of axes, then we'll use the first axis for this drawing.
+except:
+    try:
+        ax = axes[0] # If axes is a 1D array of axes, then we'll use the first axis for this drawing.
+    except:
+        ax = axes # If axes is just a single axis then we'll use it directly.
 
-# Print out the available AOD Total columns
-print(df.columns[AODTotalColumns], '\tSize: ', len(df.columns[AODTotalColumns]))
+# Initializing main Axis and plot
+fig.autofmt_xdate() ## Note: With multiple plots, this removes the x-axis identifiers for plots not in the bottom row 
+ax.set_title("Modesto 2019: AOD, Wind Speed, and Temperature")
+ax.grid(which='both',axis='both')
+ax.xaxis.set_major_locator(mdates.DayLocator(interval=1, tz='US/Pacific'))
+ax.xaxis.set_minor_locator(mdates.HourLocator(interval=3, tz='US/Pacific'))
+ax.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
+# Drawing the first pieces of data (AOD_500nm-Total) onto the graph
+ax.set_ylabel("AOD_500nm-Total")
+plot1, = ax.plot(df.loc[StartDate:EndDate,'AOD_500nm-Total'].resample(sampleRate).mean(),'ok-',label='AOD_500nm-Total', figure=fig) # handle, label = ax.plot()
 
-# Find the wavelength with the largest number of weekly entries
-largest = [0, '']  # Initialize a list to track the largest entry count and corresponding wavelength
-for i in df.columns[AODTotalColumns]:  
-    if (df[i].mean() > 0):  # Check if the mean AOD is greater than zero
-        # Calculate the maximum weekly entries
-        if df.loc[StartDate:EndDate, iWaveLength].dropna().groupby([pd.Grouper(freq='W')]).size().max() > largest[0]:
-            largest[0], largest[1] = df.loc[StartDate:EndDate, iWaveLength].dropna().groupby([pd.Grouper(freq='W')]).size().max(), i
-print('The Wavelength ', largest[1], 'has the largest number of weekly entries at ', largest[0], ' entries.')  # Print the result
-# Create the plot for AOD data availability
-ax = plt.figure(figsize=(16 * .65, 9 * .65)).add_subplot(111)  # Set figure size and create a subplot
-ax.set_title(siteName + ' Weekly AOD-Total Data Availability for ' + filename[13:17])  # Set the title of the plot
+# Adding a new Axis sharing the same xaxis as before and drawing the second piece of data.
+ax2 = ax.twinx()
+ax2.spines.right.set_position(('axes', 1.05)) # Adjusting the position of the "spine" or y-axis to not overlap with the next pieces of data
+ax2.set_ylabel('Temperature °C')
+ax2.set_ylim(Tdf[0].loc[StartDate:EndDate].astype(float).resample(sampleRate).mean().div(10).min()//-1,Tdf[0].loc[StartDate:EndDate].astype(float).resample(sampleRate).mean().div(10).max()//1) # Auto Calculating
+ax2.set_ylim(18,41) # Manual Setting
+plot2, = ax2.plot(Tdf[0].loc[StartDate:EndDate].astype(float).resample(sampleRate).mean().div(10), '.r-',label='Temperature',figure=fig) # handle, label = ax2.plot()
 
-# Dynamically Adjusting Colors to increase the potential number of colors usable in the graph
-vaildWavelengthsCount = 0  # Initialize count of valid wavelengths
-for i in df.columns[AODTotalColumns]:
-    if (df[i].mean() > 0):  # Count valid wavelengths
-        vaildWavelengthsCount += 1
+# Adding a new Axis sharing the same xaxis as the previous two and drawing the thrid piece of data
+ax3 = ax.twinx()
+#ax3.spines.right.set_position(('axes', 1)) # Adjusting the position of the "spine" or y-axis (Only needed if we want to move this y-axis)
+ax3.set_ylabel("Wind Mag m/s")
+ax3.set_ylim(WNDdf[3].loc[StartDate:EndDate].astype(float).div(10).min()//1, WNDdf[3].loc[StartDate:EndDate].astype(float).div(10).max()//1) # Auto Calculating
+ax3.set_ylim(1,8) # Manual Setting
+plot3 = ax3.quiver(WNDdf[5].resample(windSampleRate).mean().index,
+                   np.sqrt( (WNDdf[5].loc[StartDate:EndDate].astype(float).resample(windSampleRate).sum() / 
+                WNDdf.loc[StartDate:EndDate].resample(windSampleRate).size())**2 + 
+                (WNDdf[6].loc[StartDate:EndDate].astype(float).resample(windSampleRate).sum() / 
+                WNDdf.loc[StartDate:EndDate].resample(windSampleRate).size())**2
+                )/10,
+                -WNDdf[5].loc[StartDate:EndDate].astype(float).resample(windSampleRate).mean().div(10), 
+                -WNDdf[6].loc[StartDate:EndDate].astype(float).resample(windSampleRate).mean().div(10),
+                color='b',label='Wind Vector')
 
-# Set color map for the plot
-cm = plt.get_cmap('gist_rainbow')  # Get a rainbow color map
-ax.set_prop_cycle(color=[cm(1. * i / vaildWavelengthsCount) for i in range(vaildWavelengthsCount)])  # Apply color cycle
+#testString = 'Temperature: ' + str(Tdf[0].loc[StartDate:EndDate].astype(float).resample(sampleRate).mean().div(10).max()//1) + '/' + str(Tdf[0].loc[StartDate:EndDate].astype(float).resample(sampleRate).mean().div(10).min()//1) + '\nPercipiation: ' + str(5)
+#ax.text(0.5, 0.5, testString, transform=ax.transAxes, fontsize=10, bbox= dict(boxstyle='round', facecolor='cyan', alpha=0.5))
 
-# Plot the data availability on the graph
-count, handlesList = 0, []  # Initialize count and handles for legend
-# Plot wind data
-dfGroup = WNDdf.loc[StartDate:EndDate, 1].dropna().groupby([pd.Grouper(freq='W')]).size()  # Group wind data by week
-wind = ax.plot(dfGroup[dfGroup <= 24 * 7] / (24 * 7) * 100, '.', label='Wind', markersize=vaildWavelengthsCount * 1.5, c='k')  # Plot valid wind data
-handlesList.append(wind[0])  # Add wind plot to handles list
-ax.plot(dfGroup[dfGroup > 24 * 7] / (24 * 7) * 100, '.', label='Wind', markersize=vaildWavelengthsCount * 1.5, c='k')  # Plot wind data exceeding 100%
+# Displaying the legend and Reorganizing everything to fit nicely
+## Note: plot1 and plot2 are the handles for the data we created and plot3, the quiver, is handled differently.
+plt.legend(handles = [plot1, plot2, plot3], loc = 'best')
+plt.tight_layout() # Adjusts the boundaries of the figures to ensure everything fits nicely. Can define pads as we we see fit. 
+# Example: plt.tight_layout(pad=n, h_pad=n2, w_pad=n3, rect=tuple) where n# are floats and tuple is a tubple of integers (0,0,1,1)
 
-# Loop through each valid wavelength and plot AOD data
-for iWaveLength in df.columns[AODTotalColumns]:  
-    if (df[iWaveLength].mean() > 0):  # Check if the mean AOD is valid
-        dfGroup = df.loc[StartDate:EndDate, iWaveLength].dropna().groupby([pd.Grouper(freq='W')]).size()  # Group AOD data by week
-        dots = ax.plot(dfGroup[dfGroup <= 4 * 12 * 7] / (4 * 12 * 7) * 100, '.', label=iWaveLength, markersize=vaildWavelengthsCount * 3 - count * 2)  # Plot valid AOD data
-        handlesList.append(dots[0])  # Add AOD plot to handles list
-        # Plot data exceeding 100% availability on the 100% line
-        ax.plot(dfGroup[dfGroup > 4 * 12 * 7] / dfGroup[dfGroup > 4 * 12 * 7] * 100, '.', markersize=vaildWavelengthsCount * 3 - count * 2, c=dots[0].get_color())  
-        print('Dropped ', len(df.loc[StartDate:EndDate, iWaveLength]) - len(df.loc[StartDate:EndDate, iWaveLength].dropna()), ' NaN entries from ', iWaveLength)  # Print number of NaN entries dropped
-        count += 1  # Increment the count of plotted wavelengths
-# Formatting the graph for better visualization
-plt.gcf().autofmt_xdate()  # Automatically format x-axis dates for better readability
-plt.grid(which='major', axis='both')  # Add grid lines for major ticks
-plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=7, tz='US/Pacific'))  # Set major x-axis ticks to every week
-plt.gca().xaxis.set_minor_locator(mdates.HourLocator(interval=24, tz='US/Pacific'))  # Set minor x-axis ticks to every day
-plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))  # Format the major x-axis date labels
-plt.ylim(0, 100)  # Set y-axis limits from 0 to 100%
-plt.ylabel('Availability %')  # Set y-axis label
-plt.legend(handles=handlesList, loc='best')  # Create legend with plotted handles
-plt.tight_layout()  # Adjust layout to fit elements
+# Optional, saving the plot to a file as a .png.
+## Note: You must save the plot before calling plt.show(), additionally, you must have the relative directory setup otherwise this will produce a "soft" error.
+## Change 'False' in the if-statement to True to enable saving the plot as a png
+if False:
+    filename = 'Modesto_' + str(pd.Timestamp.now().strftime('%Y-%m-%d_%H%M%S'))# + StartDate + '_' + EndDate
+    location = 'graphs\\Modesto 2019\\' + filename
+    plt.savefig(location) # Saves the plot to a .png file.
 
-# Optional: Save the plot to a file as a .png
+plt.show()
+
+# Additional Info/Links:
+# https://matplotlib.org/2.0.2/users/recipes.html # ← Contains Additional information on useful plotting techniques
+# https://matplotlib.org/3.4.3/gallery/ticks_and_spines/multiple_yaxis_with_spines.html # ← Use this format for graph handling
