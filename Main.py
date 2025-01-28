@@ -94,7 +94,7 @@ if df_1 is not None:
             st.pyplot(plt.gcf())
 
      # URL for the wind data file
-windfile = 'https://raw.githubusercontent.com/Rsaltos7/AODDATA/refs/heads/main/72492623258%20(2).csv'
+windfile = 'https://raw.githubusercontent.com/Rsaltos7/AERONET_Streamlit/refs/heads/main/72492623258.csv'
 windSampleRate = '3h'
      # Read the wind data
 Wdf = pd.read_csv(windfile, parse_dates={'datetime': [1]}, low_memory=False)
@@ -228,3 +228,4 @@ plt.tight_layout() # Adjusts the boundaries of the figures to ensure everything 
 
 #Display the plot in Streamlit
 st.pyplot(fig)
+
