@@ -9,9 +9,9 @@ import numpy as np
 siteName = "Turlock CA USA"
 SampleRate = "1h"
 st.header = "Turlock AOD"
-StartDate = st.date_input("StartDate", datetime.date(2023, 7, 1))
+StartDate = st.date_input("StartDate", datetime.date(2024, 1, 1))
 StartDateTime = datetime.datetime.combine(StartDate, datetime.time(0, 0))
-EndDate = st.date_input("EndDate", datetime.date(2023, 7, 7))
+EndDate = st.date_input("EndDate", datetime.date(2024, 1, 2))
 EndDateTime = datetime.datetime.combine(EndDate, datetime.time(23, 59))
 
 # Allow the user to set y-axis limits
@@ -20,7 +20,7 @@ AOD_min = st.sidebar.slider("Y-Axis Min", min_value=0.0, max_value=1.0, value=0.
 AOD_max = st.sidebar.slider("Y-Axis Max", min_value=0.0, max_value=1.0, value=0.3, step=0.01)
 
 # Input GitHub URL for the first repository
-file_url_1 = "https://raw.githubusercontent.com/Rsaltos7/AERONET_Streamlit/refs/heads/main/20230101_20241231_Turlock_CA_USA_part1.lev15"
+file_url_1 = "https://raw.githubusercontent.com/Rsaltos7/AODDATA/refs/heads/main/20240101_20241231_Modesto.lev15"
 
 # Function to load data from the given URL
 def load_data(file_url):
