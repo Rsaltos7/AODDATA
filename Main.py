@@ -6,9 +6,9 @@ import matplotlib.dates as mdates
 import numpy as np
 
 # Set up basic information
-siteName = "Turlock CA USA"
+siteName = "Modesto CA USA"
 SampleRate = "1h"
-st.header = "Turlock AOD"
+st.header = "Modesto AOD"
 StartDate = st.date_input("StartDate", datetime.date(2024, 4, 1))
 StartDateTime = datetime.datetime.combine(StartDate, datetime.time(0, 0))
 EndDate = st.date_input("EndDate", datetime.date(2024, 4, 7))
@@ -61,7 +61,7 @@ if df_1 is not None:
         plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
         plt.ylim(AOD_min, AOD_max)
         plt.legend()
-        plt.title("AOD Turlock")  # Added title for AOD graph
+        plt.title("AOD Modesto")  # Added title for AOD graph
         st.pyplot(plt.gcf())
         
         # Ask user to match wavelengths to positions
