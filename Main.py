@@ -91,7 +91,7 @@ if df_1 is not None:
             #plt.ylim(AOD_min, AOD_max)
             #plt.legend()
             #plt.title("AOD Turlock")  # Added title for AOD graph
-            st.pyplot(plt.gcf())
+            #st.pyplot(plt.gcf())
 
      # URL for the wind data file
 windfile = 'https://raw.githubusercontent.com/Rsaltos7/AERONET_Streamlit/refs/heads/main/72492623258.csv'
