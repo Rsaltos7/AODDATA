@@ -55,14 +55,14 @@ if df_1 is not None:
         #plt.plot(df_1.loc[StartDateTime.strftime('%Y-%m-%d %H:%M:%S'):EndDateTime.strftime('%Y-%m-%d %H:%M:%S'), "AOD_675nm"].resample(SampleRate).mean(), '.k')
 
         # Format the plot
-        plt.gcf().autofmt_xdate()
-        plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=1, tz='US/Pacific'))
-        plt.gca().xaxis.set_minor_locator(mdates.HourLocator(interval=12, tz='US/Pacific'))
-        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
-        plt.ylim(AOD_min, AOD_max)
-        plt.legend()
-        plt.title("AOD Turlock")  # Added title for AOD graph
-        st.pyplot(plt.gcf())
+       #plt.gcf().autofmt_xdate()
+        #plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=1, tz='US/Pacific'))
+        #plt.gca().xaxis.set_minor_locator(mdates.HourLocator(interval=12, tz='US/Pacific'))
+        #plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
+        #plt.ylim(AOD_min, AOD_max)
+       # plt.legend()
+       # plt.title("AOD Turlock")  # Added title for AOD graph
+       # st.pyplot(plt.gcf())
         
         # Ask user to match wavelengths to positions
         st.text("\nMatch the wavelengths to the positions on the graph:")
