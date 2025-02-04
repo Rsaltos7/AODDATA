@@ -1,17 +1,17 @@
 import streamlit as st
 import datetime
 import pandas as pd
-#import matplotlib.pyplot as plt
-#import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 import numpy as np
 
 # Set up basic information
 siteName = "Turlock CA USA"
 SampleRate = "1h"
 st.header = "Turlock AOD"
-StartDate = st.date_input("StartDate", datetime.date(1, 1, 2024))
+StartDate = st.date_input("StartDate", datetime.date(2023, 7, 1))
 StartDateTime = datetime.datetime.combine(StartDate, datetime.time(0, 0))
-EndDate = st.date_input("EndDate", datetime.date(1,7, 2024))
+EndDate = st.date_input("EndDate", datetime.date(2023, 7, 7))
 EndDateTime = datetime.datetime.combine(EndDate, datetime.time(23, 59))
 
 # Allow the user to set y-axis limits
@@ -20,13 +20,13 @@ AOD_min = st.sidebar.slider("Y-Axis Min", min_value=0.0, max_value=1.0, value=0.
 AOD_max = st.sidebar.slider("Y-Axis Max", min_value=0.0, max_value=1.0, value=0.3, step=0.01)
 
 # Input GitHub URL for the first repository
-file_url_1 = "https://raw.githubusercontent.com/Rsaltos7/AODDATA/refs/heads/main/20240101_20241231_Modesto.lev15"
+file_url_1 = "https://raw.githubusercontent.com/Rsaltos7/AERONET_Streamlit/refs/heads/main/20230101_20241231_Turlock_CA_USA_part1.lev15"
 
 # Function to load data from the given URL
 def load_data(file_url):
     try:
         # Read the data from the provided GitHub raw URL
-        df = pd.read_csv(file_url, skiprows=7, parse_dates={'datetime': [0, 1]})
+        df = pd.read_csv(file_url, skiprows=6, parse_dates={'datetime': [0, 1]})
         datetime_utc = pd.to_datetime(df["datetime"], format='%d:%m:%Y %H:%M:%S')
         datetime_pac = pd.to_datetime(datetime_utc).dt.tz_localize('UTC').dt.tz_convert('US/Pacific')
         df.set_index(datetime_pac, inplace=True)
@@ -50,19 +50,19 @@ if df_1 is not None:
     if 'AOD_440nm' in df_1.columns and 'AOD_500nm' in df_1.columns and 'AOD_675nm' in df_1.columns:
         
         # Plot AOD_440nm, AOD_500nm, and AOD_675nm as initial plot
-        #plt.plot(df_1.loc[StartDateTime.strftime('%Y-%m-%d %H:%M:%S'):EndDateTime.strftime('%Y-%m-%d %H:%M:%S'), "AOD_440nm"].resample(SampleRate).mean(), '.k')
-        #plt.plot(df_1.loc[StartDateTime.strftime('%Y-%m-%d %H:%M:%S'):EndDateTime.strftime('%Y-%m-%d %H:%M:%S'), "AOD_500nm"].resample(SampleRate).mean(), '.k')
-        #plt.plot(df_1.loc[StartDateTime.strftime('%Y-%m-%d %H:%M:%S'):EndDateTime.strftime('%Y-%m-%d %H:%M:%S'), "AOD_675nm"].resample(SampleRate).mean(), '.k')
+        plt.plot(df_1.loc[StartDateTime.strftime('%Y-%m-%d %H:%M:%S'):EndDateTime.strftime('%Y-%m-%d %H:%M:%S'), "AOD_440nm"].resample(SampleRate).mean(), '.k')
+        plt.plot(df_1.loc[StartDateTime.strftime('%Y-%m-%d %H:%M:%S'):EndDateTime.strftime('%Y-%m-%d %H:%M:%S'), "AOD_500nm"].resample(SampleRate).mean(), '.k')
+        plt.plot(df_1.loc[StartDateTime.strftime('%Y-%m-%d %H:%M:%S'):EndDateTime.strftime('%Y-%m-%d %H:%M:%S'), "AOD_675nm"].resample(SampleRate).mean(), '.k')
 
         # Format the plot
-        #plt.gcf().autofmt_xdate()
-        #plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=1, tz='US/Pacific'))
-        #plt.gca().xaxis.set_minor_locator(mdates.HourLocator(interval=12, tz='US/Pacific'))
-        #plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
-        #plt.ylim(AOD_min, AOD_max)
-        #plt.legend()
-        #plt.title("AOD Turlock")  # Added title for AOD graph
-        #st.pyplot(plt.gcf())
+        plt.gcf().autofmt_xdate()
+        plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=1, tz='US/Pacific'))
+        plt.gca().xaxis.set_minor_locator(mdates.HourLocator(interval=12, tz='US/Pacific'))
+        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
+        plt.ylim(AOD_min, AOD_max)
+        plt.legend()
+        plt.title("AOD Turlock")  # Added title for AOD graph
+        st.pyplot(plt.gcf())
         
         # Ask user to match wavelengths to positions
         st.text("\nMatch the wavelengths to the positions on the graph:")
@@ -94,7 +94,7 @@ if df_1 is not None:
             st.pyplot(plt.gcf())
 
      # URL for the wind data file
-windfile = 'https://raw.githubusercontent.com/Rsaltos7/AODDATA/refs/heads/main/72492623258%20(3).csv'
+windfile = 'https://raw.githubusercontent.com/Rsaltos7/AERONET_Streamlit/refs/heads/main/72492623258.csv'
 windSampleRate = '3h'
      # Read the wind data
 Wdf = pd.read_csv(windfile, parse_dates={'datetime': [1]}, low_memory=False)
@@ -118,7 +118,7 @@ Wdf_filtered = Wdf.loc[StartDate:EndDate]
 
 # Extract wind data (direction and speed) and filter valid observations
 WNDdf = Wdf_filtered['WND'].str.split(pat=',', expand=True)
-#WNDdf = WNDdf.loc[WNDdf[4] == '5']  # Only valid observations
+WNDdf = WNDdf.loc[WNDdf[4] == '5']  # Only valid observations
 
 # Initialize lists for Cartesian components
 Xdata, Ydata = [], []
@@ -135,9 +135,9 @@ WNDdf[5], WNDdf[6] = Xdata, Ydata
 
 
 # Create a plot
-#fig, ax = plt.subplots(figsize=(10, 6))
-#ax.set_title("Wind Vector")  # Added title for Wind Vector graph
-#ax.set_xlabel("Time")
+fig, ax = plt.subplots(figsize=(10, 6))
+ax.set_title("Wind Vector")  # Added title for Wind Vector graph
+ax.set_xlabel("Time")
 #ax2.set_ylim(AOD_min,AOD_max)
 
 ax.yaxis.set_label_position('right')  # Move label to the right
