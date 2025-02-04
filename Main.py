@@ -118,7 +118,7 @@ Wdf_filtered = Wdf.loc[StartDate:EndDate]
 
 # Extract wind data (direction and speed) and filter valid observations
 WNDdf = Wdf_filtered['WND'].str.split(pat=',', expand=True)
-WNDdf = WNDdf.loc[WNDdf[4] == '5']  # Only valid observations
+#WNDdf = WNDdf.loc[WNDdf[4] == '5']  # Only valid observations
 
 # Initialize lists for Cartesian components
 Xdata, Ydata = [], []
