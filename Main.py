@@ -9,9 +9,9 @@ import numpy as np
 siteName = "Turlock CA USA"
 SampleRate = "1h"
 st.header = "Turlock AOD"
-StartDate = st.date_input("StartDate", datetime.date(2023, 7, 1))
+StartDate = st.date_input("StartDate", datetime.date(2024, 4, 1))
 StartDateTime = datetime.datetime.combine(StartDate, datetime.time(0, 0))
-EndDate = st.date_input("EndDate", datetime.date(2023, 7, 7))
+EndDate = st.date_input("EndDate", datetime.date(2024, 4, 7))
 EndDateTime = datetime.datetime.combine(EndDate, datetime.time(23, 59))
 
 # Allow the user to set y-axis limits
