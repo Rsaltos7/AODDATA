@@ -193,30 +193,30 @@ except:
 
 # Initializing main Axis and plot
 #fig.autofmt_xdate() ## Note: With multiple plots, this removes the x-axis identifiers for plots not in the bottom row
-ax.set_title('Turlock AOD Modesto Wind Speed, and Temperature ')
-ax.grid(which='both',axis='both')
-ax.xaxis.set_major_locator(mdates.DayLocator(interval=1, tz='US/Pacific'))
-ax.xaxis.set_minor_locator(mdates.HourLocator(interval=3, tz='US/Pacific'))
-ax.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
+#ax.set_title('Turlock AOD Modesto Wind Speed, and Temperature ')
+#ax.grid(which='both',axis='both')
+#ax.xaxis.set_major_locator(mdates.DayLocator(interval=1, tz='US/Pacific'))
+#ax.xaxis.set_minor_locator(mdates.HourLocator(interval=3, tz='US/Pacific'))
+#ax.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
 
 # Drawing the first pieces of data (AOD_500nm-Total) onto the graph
-ax.set_ylabel('AOD_500nm')
-aodHandle, = ax.plot(df_1.loc[StartDate:EndDate, 'AOD_500nm'].resample(SampleRate).mean(),'ok-',label= 'AOD_500nm', figure=fig) # handle, label = ax.plot()
-ax.set_ylim(AOD_min,AOD_max) # Manually set the values for the y-limit of the plot
+#ax.set_ylabel('AOD_500nm')
+#aodHandle, = ax.plot(df_1.loc[StartDate:EndDate, 'AOD_500nm'].resample(SampleRate).mean(),'ok-',label= 'AOD_500nm', figure=fig) # handle, label = ax.plot()
+#ax.set_ylim(AOD_min,AOD_max) # Manually set the values for the y-limit of the plot
 
 # Adding a new Axis sharing the same xaxis as before and drawing the second piece of data.
-ax2 = ax.twinx()
-ax2.spines.right.set_position(('axes', 1.05)) # Adjusting the position of the "spine" or y-axis to not overlap with the next pieces of data
-ax2.set_ylabel('Temperature °C')
-ax2.set_ylim(Tdf[0].loc[StartDate:EndDate].astype(float).resample(SampleRate).mean().div(10).min()//1,
-            Tdf[0].loc[StartDate:EndDate].astype(float).resample(SampleRate).mean().div(10).max()//1+3) # Auto Calculatingtemperature
-temperatureHandle, = ax2.plot(Tdf[0].loc[StartDate:EndDate].astype(float).resample(SampleRate).mean().div(10), '.r-',label='Temperature',figure=fig) # handle, label = ax2.plot()
+#ax2 = ax.twinx()
+#ax2.spines.right.set_position(('axes', 1.05)) # Adjusting the position of the "spine" or y-axis to not overlap with the next pieces of data
+#ax2.set_ylabel('Temperature °C')
+#ax2.set_ylim(Tdf[0].loc[StartDate:EndDate].astype(float).resample(SampleRate).mean().div(10).min()//1,
+            #Tdf[0].loc[StartDate:EndDate].astype(float).resample(SampleRate).mean().div(10).max()//1+3) # Auto Calculatingtemperature
+#temperatureHandle, = ax2.plot(Tdf[0].loc[StartDate:EndDate].astype(float).resample(SampleRate).mean().div(10), '.r-',label='Temperature',figure=fig) # handle, label = ax2.plot()
 
 # Adding a new Axis sharing the same xaxis as the previous two and drawing the thrid piece of data
-ax3 = ax.twinx()
-ax3.set_ylabel("Wind Mag m/s")
-ax3.set_ylim(0,maxWind)
-windHandle = ax3.quiver(WNDdf[5].resample(windSampleRate).mean().index,maxWind-1,
+#ax3 = ax.twinx()
+#ax3.set_ylabel("Wind Mag m/s")
+#ax3.set_ylim(0,maxWind)
+#windHandle = ax3.quiver(WNDdf[5].resample(windSampleRate).mean().index,maxWind-1,
                 -WNDdf[5].loc[StartDate:EndDate].astype(float).resample(windSampleRate).mean().div(10),
                 -WNDdf[6].loc[StartDate:EndDate].astype(float).resample(windSampleRate).mean().div(10),
                 color='b',label='Wind Vector',width=0.005)
