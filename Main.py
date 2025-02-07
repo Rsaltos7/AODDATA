@@ -50,19 +50,19 @@ if df_1 is not None:
     if 'AOD_440nm' in df_1.columns and 'AOD_500nm' in df_1.columns and 'AOD_675nm' in df_1.columns:
         
         # Plot AOD_440nm, AOD_500nm, and AOD_675nm as initial plot
-        plt.plot(df_1.loc[StartDateTime.strftime('%Y-%m-%d %H:%M:%S'):EndDateTime.strftime('%Y-%m-%d %H:%M:%S'), "AOD_440nm"].resample(SampleRate).mean(), '.k')
-        plt.plot(df_1.loc[StartDateTime.strftime('%Y-%m-%d %H:%M:%S'):EndDateTime.strftime('%Y-%m-%d %H:%M:%S'), "AOD_500nm"].resample(SampleRate).mean(), '.k')
-        plt.plot(df_1.loc[StartDateTime.strftime('%Y-%m-%d %H:%M:%S'):EndDateTime.strftime('%Y-%m-%d %H:%M:%S'), "AOD_675nm"].resample(SampleRate).mean(), '.k')
+        #plt.plot(df_1.loc[StartDateTime.strftime('%Y-%m-%d %H:%M:%S'):EndDateTime.strftime('%Y-%m-%d %H:%M:%S'), "AOD_440nm"].resample(SampleRate).mean(), '.k')
+        #plt.plot(df_1.loc[StartDateTime.strftime('%Y-%m-%d %H:%M:%S'):EndDateTime.strftime('%Y-%m-%d %H:%M:%S'), "AOD_500nm"].resample(SampleRate).mean(), '.k')
+        #plt.plot(df_1.loc[StartDateTime.strftime('%Y-%m-%d %H:%M:%S'):EndDateTime.strftime('%Y-%m-%d %H:%M:%S'), "AOD_675nm"].resample(SampleRate).mean(), '.k')
 
         # Format the plot
-        plt.gcf().autofmt_xdate()
-        plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=1, tz='US/Pacific'))
-        plt.gca().xaxis.set_minor_locator(mdates.HourLocator(interval=12, tz='US/Pacific'))
-        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
-        plt.ylim(AOD_min, AOD_max)
-        plt.legend()
-        plt.title("AOD Turlock")  # Added title for AOD graph
-        st.pyplot(plt.gcf())
+        #plt.gcf().autofmt_xdate()
+        #plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=1, tz='US/Pacific'))
+        #plt.gca().xaxis.set_minor_locator(mdates.HourLocator(interval=12, tz='US/Pacific'))
+        #plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
+        #plt.ylim(AOD_min, AOD_max)
+        #plt.legend()
+        #plt.title("AOD Turlock")  # Added title for AOD graph
+        #st.pyplot(plt.gcf())
         
         # Ask user to match wavelengths to positions
         st.text("\nMatch the wavelengths to the positions on the graph:")
@@ -79,17 +79,17 @@ if df_1 is not None:
         # Once the user submits, show the second graph (same as the first)
         if st.button("Submit"):
             # Plot the second graph (exact same as the first one)
-            plt.plot(df_1.loc[StartDateTime.strftime('%Y-%m-%d %H:%M:%S'):EndDateTime.strftime('%Y-%m-%d %H:%M:%S'), "AOD_440nm"].resample(SampleRate).mean(), '.b', label="440 nm")
-            plt.plot(df_1.loc[StartDateTime.strftime('%Y-%m-%d %H:%M:%S'):EndDateTime.strftime('%Y-%m-%d %H:%M:%S'), "AOD_500nm"].resample(SampleRate).mean(), '.g', label="500 nm")
-            plt.plot(df_1.loc[StartDateTime.strftime('%Y-%m-%d %H:%M:%S'):EndDateTime.strftime('%Y-%m-%d %H:%M:%S'), "AOD_675nm"].resample(SampleRate).mean(), '.r', label="675 nm")
+            #plt.plot(df_1.loc[StartDateTime.strftime('%Y-%m-%d %H:%M:%S'):EndDateTime.strftime('%Y-%m-%d %H:%M:%S'), "AOD_440nm"].resample(SampleRate).mean(), '.b', label="440 nm")
+            #plt.plot(df_1.loc[StartDateTime.strftime('%Y-%m-%d %H:%M:%S'):EndDateTime.strftime('%Y-%m-%d %H:%M:%S'), "AOD_500nm"].resample(SampleRate).mean(), '.g', label="500 nm")
+            #plt.plot(df_1.loc[StartDateTime.strftime('%Y-%m-%d %H:%M:%S'):EndDateTime.strftime('%Y-%m-%d %H:%M:%S'), "AOD_675nm"].resample(SampleRate).mean(), '.r', label="675 nm")
 
             # Format the second plot
-            plt.gcf().autofmt_xdate()
-            plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=1, tz='US/Pacific'))
-            plt.gca().xaxis.set_minor_locator(mdates.HourLocator(interval=12, tz='US/Pacific'))
-            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
-            plt.ylim(AOD_min, AOD_max)
-            plt.legend()
+            #plt.gcf().autofmt_xdate()
+            #plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=1, tz='US/Pacific'))
+            #plt.gca().xaxis.set_minor_locator(mdates.HourLocator(interval=12, tz='US/Pacific'))
+            #plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
+            #plt.ylim(AOD_min, AOD_max)
+            #plt.legend()
             st.pyplot(plt.gcf())
 
 # URL for the wind data file
