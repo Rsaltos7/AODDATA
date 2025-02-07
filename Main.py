@@ -219,7 +219,7 @@ except:
 #windHandle = ax3.quiver(WNDdf[5].resample(windSampleRate).mean().index,maxWind-1,
                 -WNDdf[5].loc[StartDate:EndDate].astype(float).resample(windSampleRate).mean().div(10),
                 -WNDdf[6].loc[StartDate:EndDate].astype(float).resample(windSampleRate).mean().div(10),
-                color='b',label='Wind Vector',width=0.005)
+                #color='b',label='Wind Vector',width=0.005)
 
 # Displaying the legend and Reorganizing everything to fit nicely
 ## Note: plot1 and plot2 are the handles for the data we created and plot3, the quiver, is handled differently.
