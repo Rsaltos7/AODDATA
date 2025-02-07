@@ -189,7 +189,7 @@ except:
     try:
         ax = axes[0] # If axes is a 1D array of axes, then we'll use the first axis for this drawing.
     except:
-        ax = axes # If axes is just a single axis then we'll use it directly.
+        #ax = axes # If axes is just a single axis then we'll use it directly.
 
 # Initializing main Axis and plot
 fig.autofmt_xdate() ## Note: With multiple plots, this removes the x-axis identifiers for plots not in the bottom row
