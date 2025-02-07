@@ -187,7 +187,7 @@ Tdf = Wdf.loc[StartDate:EndDate,'TMP'].str.split(pat=',', expand = True)
     #ax = axes[0,0] # If axes is a 2D array of axes, then we'll use the first axis for this drawing.
 #except:
     #try:
-        ax = axes[0] # If axes is a 1D array of axes, then we'll use the first axis for this drawing.
+        #ax = axes[0] # If axes is a 1D array of axes, then we'll use the first axis for this drawing.
     #except:
         #ax = axes # If axes is just a single axis then we'll use it directly.
 
