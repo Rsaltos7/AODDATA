@@ -78,7 +78,7 @@ if df_1 is not None:
                                              key=pos)
 
         # Once the user submits, show the second graph (same as the first)
-        if st.button("Submit"):
+        #if st.button("Submit"):
             # Plot the second graph (exact same as the first one)
             #plt.plot(df_1.loc[StartDateTime.strftime('%Y-%m-%d %H:%M:%S'):EndDateTime.strftime('%Y-%m-%d %H:%M:%S'), "AOD_440nm"].resample(SampleRate).mean(), '.b', label="440 nm")
             #plt.plot(df_1.loc[StartDateTime.strftime('%Y-%m-%d %H:%M:%S'):EndDateTime.strftime('%Y-%m-%d %H:%M:%S'), "AOD_500nm"].resample(SampleRate).mean(), '.g', label="500 nm")
