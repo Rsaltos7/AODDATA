@@ -223,8 +223,8 @@ except:
 
 # Displaying the legend and Reorganizing everything to fit nicely
 ## Note: plot1 and plot2 are the handles for the data we created and plot3, the quiver, is handled differently.
-plt.legend(handles = [aodHandle, temperatureHandle, windHandle], loc = 'best')
-plt.tight_layout() # Adjusts the boundaries of the figures to ensure everything fits nicely. Can define pads as we we see fit.
+#plt.legend(handles = [aodHandle, temperatureHandle, windHandle], loc = 'best')
+#plt.tight_layout() # Adjusts the boundaries of the figures to ensure everything fits nicely. Can define pads as we we see fit.
 
 
 #Display the plot in Streamlit
