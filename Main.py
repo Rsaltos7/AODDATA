@@ -192,7 +192,7 @@ except:
         #ax = axes # If axes is just a single axis then we'll use it directly.
 
 # Initializing main Axis and plot
-fig.autofmt_xdate() ## Note: With multiple plots, this removes the x-axis identifiers for plots not in the bottom row
+#fig.autofmt_xdate() ## Note: With multiple plots, this removes the x-axis identifiers for plots not in the bottom row
 ax.set_title('Turlock AOD Modesto Wind Speed, and Temperature ')
 ax.grid(which='both',axis='both')
 ax.xaxis.set_major_locator(mdates.DayLocator(interval=1, tz='US/Pacific'))
