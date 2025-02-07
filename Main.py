@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 
 # Set up basic information
-siteName = "Turlock CA USA"
+siteName = "Modesto CA USA"
 SampleRate = "1h"
 st.header("Turlock AOD")  # Fixed this line
 StartDate = st.date_input("StartDate", datetime.date(2023, 7, 1))
