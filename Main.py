@@ -152,7 +152,7 @@ Xdata, Ydata = [], []
                   #(WNDdf[5].loc[StartDate:EndDate].astype(float).max()/10)**2)
 #ax.set_ylim(0,maxWind)
 # Resample the data according to the wind sample rate and plot the wind vectors
-ax.quiver(
+#ax.quiver(
     WNDdf[5].resample(windSampleRate).mean().index,maxWind-1,  # X-axis (time)
     -WNDdf[5].resample(windSampleRate).mean().div(10),  # X-component of arrows
     -WNDdf[6].resample(windSampleRate).mean().div(10),  # Y-component of arrows
