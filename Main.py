@@ -141,7 +141,7 @@ Xdata, Ydata = [], []
 #ax.set_xlabel("Time")
 #ax2.set_ylim(AOD_min,AOD_max)
 
-ax.yaxis.set_label_position('right')  # Move label to the right
+#ax.yaxis.set_label_position('right')  # Move label to the right
 ax.yaxis.set_ticks_position('right')  # Move ticks to the right
 ax2 = ax.twinx()
 ax2.set_ylim(AOD_min,AOD_max)
