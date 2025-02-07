@@ -149,7 +149,7 @@ Xdata, Ydata = [], []
 #ax2.yaxis.set_ticks_position('left')  # Move ticks to the left
 
 #maxWind = np.sqrt((WNDdf[6].loc[StartDate:EndDate].astype(float).max()/10)**2+
-                  (WNDdf[5].loc[StartDate:EndDate].astype(float).max()/10)**2)
+                  #(WNDdf[5].loc[StartDate:EndDate].astype(float).max()/10)**2)
 #ax.set_ylim(0,maxWind)
 # Resample the data according to the wind sample rate and plot the wind vectors
 ax.quiver(
